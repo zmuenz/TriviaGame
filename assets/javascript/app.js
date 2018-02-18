@@ -81,10 +81,12 @@ var myQuestions = [
     }
 ];
 
+// hide elements we don't need to see before quiz starts
 $("#submit").hide();
 $(".quiz-end").hide();
 $(".timer-div").hide();
 
+// The function to turn the array of questions into inputs and display them, submit them, and score them
 function createQuiz(questions, quizContainer, resultsContainer, submitButton) {
 
     run();
@@ -96,7 +98,8 @@ function createQuiz(questions, quizContainer, resultsContainer, submitButton) {
         for (var i = 0; i < questions.length; i++) {
 
             answers = [];
-
+            
+            // Adds the input html to each answer for each question
             for (letter in questions[i].answers) {
 
                 answers.push(
@@ -107,13 +110,14 @@ function createQuiz(questions, quizContainer, resultsContainer, submitButton) {
                 );
             }
 
+            // Pushes the questions and answers as HTML to the array
             output.push(
                 '<div class="question">' + questions[i].question + '</div>'
                 + '<div class="answers">' + answers.join('') + '</div>'
             );
         }
 
-        // finally combine our output list into one string of html and put it on the page
+        // output the filled quizContainer to the page
         quizContainer.innerHTML = output.join('');
     }
 
@@ -125,7 +129,7 @@ function createQuiz(questions, quizContainer, resultsContainer, submitButton) {
         // keep track of user's answers
         var userAnswer = '';
 
-        // for each question...
+        // determine scoring
         for (var i = 0; i < questions.length; i++) {
 
             // find selected answer
@@ -135,16 +139,18 @@ function createQuiz(questions, quizContainer, resultsContainer, submitButton) {
             if (userAnswer === questions[i].correctAnswer) {
                 // add to the number of correct answers
                 correctAnswers++;
+            // if answer is incorrect
             } else if (userAnswer != questions[i].correctAnswer) {
+                // add to number of incorrect answers
                 incorrectAnswers++;
+            //if question is unanswered
             } else if (userAnswer == {}) {
+                // add to number of unanswered (NOT WORKING)
                 unanswered++;
-            } else {
-                console.log("Error");
             }
         }
 
-        // show number of correct answers out of total
+        // show number of correct, incorrect, unanswered
         resultsContainer.innerHTML = "<p>" + "Correct Answers: " + correctAnswers + "</p>" + "<p>" + "Incorrect Answers: " + incorrectAnswers + "</p>" + "<p>" + "Unaswered Questions: " + unanswered + "</p>";
     }
 
@@ -169,28 +175,23 @@ function createQuiz(questions, quizContainer, resultsContainer, submitButton) {
         clearInterval(intervalId);
     }
 
-    //  The decrement function.
+    
     function decrement() {
-
-        //  Decrease number by one.
         counter--;
-
-        //  Show the number in the #show-number tag.
         $("#timer").html(counter);
 
-        //  Once number hits zero...
+        //  Once counter runs out, display the score and stop the counter
         if (counter === 0) {
-
             stop();
             $("#submit").hide();
             $(".quiz-end").show();
             $(".timer-div").hide();
             showResults(questions, quizContainer, resultsContainer);
-            
         }
     }
 };
 
+// start button resets the variables, shows and hides appropriate classes, generates the questions
 $(".start-button").click(function () {
     correctAnswers = 0;
     incorrectAnswers = 0;
@@ -198,7 +199,7 @@ $(".start-button").click(function () {
     counter = 90;
     $("#timer").text(counter);
     $(".game-start").hide();
-    $(".timer-div").show();
     $(".quiz-end").hide();
+    $(".timer-div").show();
     createQuiz(myQuestions, quizContainer, resultsContainer, submitButton);
 });
